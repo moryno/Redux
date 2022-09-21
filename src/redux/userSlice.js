@@ -1,37 +1,51 @@
-import { createSlice} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const userSlice = createSlice({
-  // store name
+export const userReducer = createAsyncThunk("users/update", async (user) => {
+  const { data } = await axios.post(
+    "http://localhost:8800/api/users/123/update",
+    user
+  );
+  return data;
+});
+
+export const userSlice = createSlice({
   name: "user",
-  // state
-  initialState:{
-    userInfo:{
-      name: "Dennis",
-      email: "dennis@email.com"
-    }, 
-    pending: null,
+  initialState: {
+    userInfo: {
+      name: "Maurice",
+      email: "mauricenganga41@gmail.com",
+    },
+    pending: false,
     error: false,
-    
   },
-// actions
-  reducers:{
-    updateStart:(state)=>{
+  extraReducers: {
+    [userReducer.pending]: (state) => {
       state.pending = true;
     },
-    updateSuccess:(state, action)=>{
+    [userReducer.fulfilled]: (state, action) => {
       state.pending = false;
       state.userInfo = action.payload;
     },
-    updateFailure:(state)=>{
+    [userReducer.rejected]: (state) => {
+      state.pending = false;
       state.error = true;
     },
-    
   },
+  // reducers: {
+  //   updateStart: (state) => {
+  //     state.pending = true;
+  //   },
+  //   updateSuccess: (state, action) => {
+  //     state.pending = false;
+  //     state.userInfo = action.payload;
+  //   },
+  //   updateFailure: (state) => {
+  //     state.pending = false;
+  //     state.error = true;
+  //   },
+  // },
 });
 
-// export action
-export const {updateStart, updateSuccess, updateFailure} = userSlice.actions;
-
-// export reducer to use in store
-export default userSlice.reducer
- 
+export const { updateStart, updateSuccess, updateFailure } = userSlice.actions;
+export default userSlice.reducer;

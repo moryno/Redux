@@ -4,30 +4,31 @@ import "./update.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../redux/apiCalls";
+import { userReducer } from "../../redux/userSlice";
 
 export default function Update() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const {userInfo, pending, error} = useSelector((state)=> state.user);
+  const { userInfo, pending, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const handleUpdate = (event)=>{
+  const handleUpdate = (event) => {
     event.preventDefault();
-    updateUser({name, email}, dispatch);
-    
+    dispatch(userReducer({ name, email }));
   };
 
-  const handleDelete = (event)=>{
+  const handleDelete = (event) => {
     event.preventDefault();
-    
-  }
+  };
 
   return (
     <div className="update">
       <div className="updateWrapper">
         <h3 className="updateTitle">Update Your Account</h3>
         <Warning />
-        <button className="delete" onClick={handleDelete}>Delete Account</button>
+        <button className="delete" onClick={handleDelete}>
+          Delete Account
+        </button>
         <div className="updateContainer">
           <form>
             <div className="formItem">
@@ -47,7 +48,7 @@ export default function Update() {
                 className="formInput"
                 type="text"
                 placeholder={userInfo.name}
-                onChange={event=>setName(event.target.value)}
+                onChange={(event) => setName(event.target.value)}
               />
             </div>
             <div className="formItem">
@@ -56,7 +57,7 @@ export default function Update() {
                 className="formInput"
                 type="text"
                 placeholder={userInfo.email}
-                onChange={event=>setEmail(event.target.value)}
+                onChange={(event) => setEmail(event.target.value)}
               />
             </div>
             <div className="formItem">
@@ -71,7 +72,9 @@ export default function Update() {
               Update
             </button>
             {error && <span className="error">Something went wrong!!</span>}
-            {pending === false && <span className="success">Profile updated!!</span>}
+            {pending === false && (
+              <span className="success">Profile updated!!</span>
+            )}
           </form>
         </div>
       </div>
